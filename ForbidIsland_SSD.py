@@ -22,9 +22,12 @@ adventurers = {	'Diver': 'Iron Gate',
 				'Engineer': 'Bronze Gate'}
 
 class Adventurer(object):
-	"""Adventurer takes name as string. 
+	"""
 	On initialization Adventurer uses name as key to lookup starting position in dictionary.
+	Arguments:
+		name - string
 	Methods: 
+		__init__(name) - sets name and position. Start position is retrieved from adventurers dictionary.
 	    get_name() - returns name as string
 	    get_position() - returns position as string
 	"""
@@ -41,7 +44,10 @@ class Adventurer(object):
 	
 class Card(object):
 	"""Card expects name as a string.
+	Arguments:
+		name - string
 	Method:
+	   __init__ - sets name
 	   get_name() - returns name as string
 	"""
 	def __init__(self, name):
@@ -55,8 +61,11 @@ class Card(object):
 
 class MapTile(Card):
     """MapTile expects name as string.
+	Arguments:
+		name - string
     Methods:
-        set_tile_status(type='Flooded'):
+        __init__ - uses Card class to set name, defaults status to 'Active'
+		set_tile_status(type='Flooded'):
             - takes type as string. 
             - available types: 'Active', 'Flooded', 'Drowned'
             - sets status to tile
@@ -65,38 +74,42 @@ class MapTile(Card):
         get_tile_name() - returns tile name as string"""
     
     def __init__(self, name):
-	Card.__init__(self, name)
-	self.status = 'Active'
+		Card.__init__(self, name)
+		self.status = 'Active'
 		
     def set_tile_status(self, type = 'Flooded'):
 		
-	if type == 'Active':
-		self.status = 'Active'
-	
-	elif type == 'Flooded':
-		self.status = 'Flooded'
-	
-	elif type == 'Drowned':
-		self.status = 'Drowned'
-	
-	return get_tile_status()
+		if type == 'Active':
+			self.status = 'Active'
+		
+		elif type == 'Flooded':
+			self.status = 'Flooded'
+		
+		elif type == 'Drowned':
+			self.status = 'Drowned'
+		
+		return get_tile_status()
 	
     def get_tile_status(self):
-	return self.status
+		return self.status
 		
     def get_tile_name(self):
-	return self.name
+		return self.name
 		
 class Deck(object):
-	"""Pass list of cards to initialize deck as list of Card instances.
-	This will also initializes empty 'discard' and 'removed' lists.
+	"""
+	Arguments:
+		list - list of names as strings
 	Methods:
-	    shuffle_deck(deck = 'main')
+	    __init__ - uses list of names to create Card instances and append to main list. 
+					This will also initializes empty 'discard' and 'removed' lists.
+		shuffle_deck(deck = 'main'):
+			- shuffles list of cards. By default shuffles 'main'. Pass 'discard' to shuffle discard.
 	    take_card_from_main():
-	        - 
+	        - pops card from main list
 	    add_discarded_to_main():
 	        - shuffles Deck.discard list 
-	        - extends Deck.deck with Deck.discard
+	        - extends Deck.main with Deck.discard
 	        - sets Deck.discard to empty list
 	    add_card_to_disard(card):
 	        - expects Card instance
@@ -107,19 +120,19 @@ class Deck(object):
 	"""
 
 	def __init__(self, list):
-		self.deck = []
+		self.main = []
 		self.discard = []
 		self.removed = []
 	
-	# creates initial deck of cards based on passed list 
+	# creates initial main of cards based on passed list 
 		for card in list:
-			self.deck.append(Card(card))	
+			self.main.append(Card(card))	
 		
 		self.shuffle_deck()
 		
 	def __str__(self):
 		self.cards = []
-		for card in self.deck:
+		for card in self.main:
 			self.cards.append(str(card.name)) 
 		
 		return '\n '.join(self.cards)
@@ -128,7 +141,7 @@ class Deck(object):
 	# shuffles list of cards
 	
 		if deck == 'main':
-			shuffle(self.deck)
+			shuffle(self.main)
 			
 		elif deck == 'discard':
 			shuffle(self.discard)
@@ -137,12 +150,12 @@ class Deck(object):
 			print "Invalid value. Only 'main' and 'discard' values are supported."
 	
 	def take_card_from_main(self):
-		return self.deck.pop()
+		return self.main.pop()
 	
 	def add_discarded_to_main(self):
 		
 		self.shuffle_deck('discard')
-		self.deck.extend(self.discard)
+		self.main.extend(self.discard)
 		self.discard = []
 	
 	def add_card_to_discard(self, card):
@@ -152,89 +165,28 @@ class Deck(object):
 		self.removed.append(card)
 
 class Map(Deck):
+	"""
+	Arguments:
+	
+	Method:
+		__init__ - takes list of names. Creates MapTile instances and append to main deck.
+				This also initializes empty list for 'discard' and 'removed' decks.
+		
+	"""
+
     def __init__(self, list):
-		self.deck = []
+		self.main = []
 		self.discard = []
 		self.removed = []
 	
-	# creates initial deck of cards based on passed list 
+	# creates initial main of cards based on passed list 
 		for card in list:
-			self.deck.append(MapTile(card))	
+			self.main.append(MapTile(card))	
 		
 		self.shuffle_deck()
-	
-    def remove_card_from_map(self, card):
-		pass
-    
-class Maps(object):
-    #hold Island tiles
-    def __init__(self):
-        self.map = []
-	self.status = ('Active','Flooded','Drowned')
-	self.tiles = {
-		'1': ["Observatory", 0],
-		'2': ["Crimson Forest", 0],
-		'3': ["Phantom Rock", 0],
-		'4': ["Dunes of Deception", 0],
-		'5': ["Lost Lagoon", 0],
-		'6': ["Misty Marsh", 0],
-		'7': ["Twilight Hollow", 0],
-		'8': ["Watchtower", 0],
-		'9': ["Breakers Bridge", 0],
-		'10': ["Cliffs of Abandon", 0],
-		'11': ["Whispering Garden", 1],
-		'12': ["Howling Garden", 1],
-		'13': ["Cave of Embers", 2],
-		'14': ["Cave of Shadows", 2],
-		'15': ["Coral Palace", 3],
-		'16': ["Tidal Palace", 3],
-		'17': ["Temple of Sun", 4],
-		'18': ["Temple of the Moon", 4],
-		'19': ["Silver Gate", 5],
-		'20': ["Iron Gate", 6],
-		'21': ["Gold Gate", 7],
-		'22': ["Bronze Gate", 8],
-		'23': ["Copper Gate", 9],
-		'24': ["Fool's Landing", 10],
-		}
-
-    def create_map(self):
-        #create IslandTile instances and assign them to random position (1 to 24)
-        for i in range(0, 24):
-            name = self.tiles[str(i+1)][0]
-            type = self.tiles[str(i+1)][1]
-            status = self.status[0]
-            tile = IslandTiles(name, type, status)
-            self.map.append(tile)
-   	#randomly assign positions for the tiles and returns
-        return shuffle(self.map)
-
-    def get_map(self):
-       # print list of cards 	
-        map = [0 for x in range(0,24)]
-        for i in range(0,24):
-            map[i] = self.map[i].name
-        return map
-
-    def get_full_map(self):
-       # print list of cards 	
-        map = [0 for x in range(0,24)]
-        for i in range(0,24):
-            #map[i] = self.map[i].name + str(' - ') + str(self.map[i].type) + str(' - ') + str(self.map[i].status)
-            map[i] = [self.map[i].name, self.map[i].type, self.map[i].status]
-        return map
-
-    def config_map(self):
-        # assign positions to the map
-        # TODO: How to store positions. List with lists for each line. May need empty tiles.
-        self.position = []
-
-    def update_status(self, position, status):
-        # position should be in range 0,24 and status in 0,2
-        self.map[position].set_status(self.status[status])
-        print self.map[position].status
 
 
+		
 def pick_adventurers(number):
 	
 	result = []
@@ -245,21 +197,15 @@ def pick_adventurers(number):
 		result.append(random_adventurer)
 	return result
 
-		
-tdeck = Deck(treasure_cards)
-fdeck = Deck(map_tiles)
-mdeck = Map(map_tiles)
-players = pick_adventurers(2)
-
 
 def flood_phase(number):
 	for x in range(0, number):
 		current_flood_card = fdeck.take_card_from_main()
 		map_index = 0
-		for x in range(len(mdeck.deck)):
-			if mdeck.deck[x].name == current_flood_card.name:
+		for x in range(len(mdeck.main)):
+			if mdeck.main[x].name == current_flood_card.name:
 				map_index = x
-		current_map_card = mdeck.deck[map_index]
+		current_map_card = mdeck.main[map_index]
 		current_map_status = current_map_card.get_tile_status()		
 		
 		if current_map_status == 'Active':
@@ -271,6 +217,18 @@ def flood_phase(number):
 			fdeck.add_card_to_removed(current_flood_card)
 			#DO I NEED TO IMPLEMENT REMOVE CARD FROM MAP METHOD?
 
+#Initial sequence for debugging and testing
+tdeck = Deck(treasure_cards)
+tdeck.shuffle_deck()
+fdeck = Deck(map_tiles)
+fdeck.shuffle_deck()
+mdeck = Map(map_tiles)
+mdeck.shuffle_deck()
+players = pick_adventurers(2)
+flood_phase(10)
+fdeck.add_discarded_to_main()
+print fdeck
+print mdeck
 
 
 
