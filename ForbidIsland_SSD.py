@@ -88,7 +88,7 @@ class MapTile(Card):
 		elif type == 'Drowned':
 			self.status = 'Drowned'
 		
-		return get_tile_status()
+		return self.get_tile_status()
 	
     def get_tile_status(self):
 		return self.status
@@ -165,27 +165,19 @@ class Deck(object):
 		self.removed.append(card)
 
 class Map(Deck):
-	"""
-	Arguments:
-	
+    """Arguments:
 	Method:
 		__init__ - takes list of names. Creates MapTile instances and append to main deck.
-				This also initializes empty list for 'discard' and 'removed' decks.
-		
-	"""
-
+				This also initializes empty list for 'discard' and 'removed' decks."""
     def __init__(self, list):
-		self.main = []
-		self.discard = []
-		self.removed = []
+        self.main = []
+	self.discard = []
+	self.removed = []
 	
 	# creates initial main of cards based on passed list 
-		for card in list:
-			self.main.append(MapTile(card))	
-		
-		self.shuffle_deck()
-
-
+	for card in list:
+		self.main.append(MapTile(card))	
+	self.shuffle_deck()
 		
 def pick_adventurers(number):
 	
